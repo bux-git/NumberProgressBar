@@ -13,8 +13,8 @@
         <item name="progress_text_size">10sp</item>
         <item name="progress_text_color">#3498DB</item>
 
-        <item name="progress_reached_bar_height">1.5dp</item>
-        <item name="progress_unreached_bar_height">0.75dp</item>
+        <item name="progress_reached_bar_height">8dp</item>
+        <item name="progress_unreached_bar_height">8dp</item>
     </style>
 
     <style name="NumberProgressBar_Passing_Green">
@@ -29,9 +29,8 @@
 
         <item name="progress_text_size">10sp</item>
         <item name="progress_text_color">#70A800</item>
-
-        <item name="progress_reached_bar_height">1.5dp</item>
-        <item name="progress_unreached_bar_height">0.75dp</item>
+        <item name="progress_reached_bar_height">6dp</item>
+        <item name="progress_unreached_bar_height">5dp</item>
     </style>
 
     <style name="NumberProgressBar_Beauty_Red">
@@ -46,8 +45,8 @@
         <item name="progress_text_size">10sp</item>
         <item name="progress_text_color">#FF3D7F</item>
 
-        <item name="progress_reached_bar_height">1.5dp</item>
-        <item name="progress_unreached_bar_height">0.75dp</item>
+        <item name="progress_reached_bar_height">6dp</item>
+        <item name="progress_unreached_bar_height">5dp</item>
     </style>
 
     <style name="NumberProgressBar_Warning_Red">
@@ -62,8 +61,8 @@
         <item name="progress_text_size">10sp</item>
         <item name="progress_text_color">#E74C3C</item>
 
-        <item name="progress_reached_bar_height">1.5dp</item>
-        <item name="progress_unreached_bar_height">0.75dp</item>
+        <item name="progress_reached_bar_height">6dp</item>
+        <item name="progress_unreached_bar_height">5dp</item>
     </style>
 
     <style name="NumberProgressBar_Relax_Blue">
@@ -77,9 +76,8 @@
         <item name="progress_reached_color">#6DBCDB</item>
         <item name="progress_text_size">10sp</item>
         <item name="progress_text_color">#6DBCDB</item>
-
-        <item name="progress_reached_bar_height">1.5dp</item>
-        <item name="progress_unreached_bar_height">0.75dp</item>
+        <item name="progress_reached_bar_height">6dp</item>
+        <item name="progress_unreached_bar_height">5dp</item>
     </style>
 
     <style name="NumberProgressBar_Grace_Yellow">
@@ -94,8 +92,8 @@
         <item name="progress_text_size">10sp</item>
         <item name="progress_text_color">#FFC73B</item>
 
-        <item name="progress_reached_bar_height">1.5dp</item>
-        <item name="progress_unreached_bar_height">0.75dp</item>
+        <item name="progress_reached_bar_height">6dp</item>
+        <item name="progress_unreached_bar_height">5dp</item>
     </style>
 
     <style name="NumberProgressBar_Funny_Orange">
@@ -110,8 +108,8 @@
         <item name="progress_text_size">10sp</item>
         <item name="progress_text_color">#FF530D</item>
 
-        <item name="progress_reached_bar_height">1.5dp</item>
-        <item name="progress_unreached_bar_height">0.75dp</item>
+        <item name="progress_reached_bar_height">6dp</item>
+        <item name="progress_unreached_bar_height">5dp</item>
     </style>
 
     <style name="NumberProgressBar_Twinkle_Night">
@@ -126,7 +124,7 @@
         <item name="progress_text_size">10sp</item>
         <item name="progress_text_color">#ECF0F1</item>
 
-        <item name="progress_reached_bar_height">1.5dp</item>
-        <item name="progress_unreached_bar_height">0.75dp</item>
+        <item name="progress_reached_bar_height">6dp</item>
+        <item name="progress_unreached_bar_height">5dp</item>
     </style>
 </resources>

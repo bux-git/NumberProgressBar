@@ -1,11 +1,14 @@
 package com.daimajia.numberprogressbar;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.graphics.Shader;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
@@ -18,6 +21,8 @@ import static com.daimajia.numberprogressbar.NumberProgressBar.ProgressTextVisib
  * Created by daimajia on 14-4-30.
  */
 public class NumberProgressBar extends View {
+
+
 
     private int mMaxProgress = 100;
 
@@ -122,6 +127,31 @@ public class NumberProgressBar extends View {
      * The Paint of the unreached area.
      */
     private Paint mUnreachedBarPaint;
+
+    private Paint mSliderPaint;
+    //滑块颜色
+    private int mSliderColor = Color.WHITE;
+    //滑块边框
+    private Paint mSliderBorder;
+    //边框颜色
+    private int mSliderBorderColor;
+    //滑块边框宽度
+    private float mSlideWidth=4;
+
+    //滑块padding
+    private int paddingTB=15;
+    private int paddingLR=10;
+
+    //进度条圆角
+    private int mBarRadius=10;
+    //方块圆角
+    private int mSliderRadius=30;
+
+    //进度条开始结束颜色
+    private int mBarStartColor=Color.parseColor("#FFFAD961");
+    private int mBarEndColor=Color.parseColor("#FFF76B1C");
+
+
     /**
      * The Paint of the progress text.
      */
@@ -155,6 +185,8 @@ public class NumberProgressBar extends View {
      */
     private OnProgressBarListener mListener;
 
+
+
     public enum ProgressTextVisibility {
         Visible, Invisible
     }
@@ -181,7 +213,7 @@ public class NumberProgressBar extends View {
 
         mReachedBarColor = attributes.getColor(R.styleable.NumberProgressBar_progress_reached_color, default_reached_color);
         mUnreachedBarColor = attributes.getColor(R.styleable.NumberProgressBar_progress_unreached_color, default_unreached_color);
-        mTextColor = attributes.getColor(R.styleable.NumberProgressBar_progress_text_color, default_text_color);
+        mSliderBorderColor=mTextColor = attributes.getColor(R.styleable.NumberProgressBar_progress_text_color, default_text_color);
         mTextSize = attributes.getDimension(R.styleable.NumberProgressBar_progress_text_size, default_text_size);
 
         mReachedBarHeight = attributes.getDimension(R.styleable.NumberProgressBar_progress_reached_bar_height, default_reached_bar_height);
@@ -236,6 +268,8 @@ public class NumberProgressBar extends View {
         return result;
     }
 
+
+
     @Override
     protected void onDraw(Canvas canvas) {
         if (mIfDrawText) {
@@ -245,20 +279,40 @@ public class NumberProgressBar extends View {
         }
 
         if (mDrawReachedBar) {
-            canvas.drawRect(mReachedRectF, mReachedBarPaint);
+            @SuppressLint("DrawAllocation")
+            //颜色渐变
+                    LinearGradient lg = new LinearGradient(mReachedRectF.left, mReachedRectF.top, mReachedRectF.right, mReachedRectF.bottom, mBarStartColor, mBarEndColor, Shader.TileMode.MIRROR);
+            mReachedBarPaint.setShader(lg);
+            //画圆角
+            canvas.drawRoundRect(mReachedRectF, mBarRadius, mBarRadius, mReachedBarPaint);
         }
 
         if (mDrawUnreachedBar) {
-            canvas.drawRect(mUnreachedRectF, mUnreachedBarPaint);
+            //画未选择的进度
+            canvas.drawRoundRect(mUnreachedRectF, mBarRadius, mBarRadius, mUnreachedBarPaint);
         }
 
-        if (mIfDrawText)
+        if (mIfDrawText) {
+            RectF rectF;
+            if (mCurrentProgress == 0) {
+                rectF = new RectF(mDrawTextStart - paddingLR, mUnreachedRectF.top - paddingTB, mUnreachedRectF.left + paddingLR, mUnreachedRectF.bottom + paddingTB);
+            } else {
+                rectF = new RectF(mReachedRectF.right - paddingLR, mReachedRectF.top - paddingTB, mUnreachedRectF.left + paddingLR, mUnreachedRectF.bottom + paddingTB);
+            }
+            //画 圆角方块
+            canvas.drawRoundRect(rectF, mSliderRadius, mSliderRadius, mSliderPaint);
+
+            //画边框
+            canvas.drawRoundRect(rectF, mSliderRadius, mSliderRadius, mSliderBorder);
+
+            //写文字
             canvas.drawText(mCurrentDrawText, mDrawTextStart, mDrawTextEnd, mTextPaint);
+        }
     }
 
     private void initializePainters() {
         mReachedBarPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mReachedBarPaint.setColor(mReachedBarColor);
+        //mReachedBarPaint.setColor(mReachedBarColor);
 
         mUnreachedBarPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mUnreachedBarPaint.setColor(mUnreachedBarColor);
@@ -266,6 +320,15 @@ public class NumberProgressBar extends View {
         mTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mTextPaint.setColor(mTextColor);
         mTextPaint.setTextSize(mTextSize);
+
+        mSliderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mSliderPaint.setColor(mSliderColor);
+        mSliderPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+
+        mSliderBorder = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mSliderBorder.setStyle(Paint.Style.STROKE);
+        mSliderBorder.setColor(mSliderBorderColor);
+        mSliderBorder.setStrokeWidth(mSlideWidth);
     }
 
 
@@ -412,9 +475,9 @@ public class NumberProgressBar extends View {
     }
 
     public void setPrefix(String prefix) {
-        if (prefix == null)
+        if (prefix == null) {
             mPrefix = "";
-        else {
+        } else {
             mPrefix = prefix;
         }
     }
@@ -428,7 +491,7 @@ public class NumberProgressBar extends View {
             setProgress(getProgress() + by);
         }
 
-        if(mListener != null){
+        if (mListener != null) {
             mListener.onProgressChange(getProgress(), getMax());
         }
     }
@@ -499,7 +562,7 @@ public class NumberProgressBar extends View {
         return mIfDrawText;
     }
 
-    public void setOnProgressBarListener(OnProgressBarListener listener){
+    public void setOnProgressBarListener(OnProgressBarListener listener) {
         mListener = listener;
     }
 }
