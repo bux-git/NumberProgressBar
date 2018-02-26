@@ -23,7 +23,6 @@ import static com.daimajia.numberprogressbar.NumberProgressBar.ProgressTextVisib
 public class NumberProgressBar extends View {
 
 
-
     private int mMaxProgress = 100;
 
     /**
@@ -136,20 +135,20 @@ public class NumberProgressBar extends View {
     //边框颜色
     private int mSliderBorderColor;
     //滑块边框宽度
-    private float mSlideWidth=4;
+    private float mSlideWidth = 4;
 
     //滑块padding
-    private int paddingTB=15;
-    private int paddingLR=10;
+    private int paddingTB = 15;
+    private int paddingLR = 10;
 
     //进度条圆角
-    private int mBarRadius=10;
+    private int mBarRadius = 10;
     //方块圆角
-    private int mSliderRadius=30;
+    private int mSliderRadius = 30;
 
     //进度条开始结束颜色
-    private int mBarStartColor=Color.parseColor("#FFFAD961");
-    private int mBarEndColor=Color.parseColor("#FFF76B1C");
+    private int mBarStartColor = Color.parseColor("#FFFAD961");
+    private int mBarEndColor = Color.parseColor("#FFF76B1C");
 
 
     /**
@@ -165,6 +164,8 @@ public class NumberProgressBar extends View {
      * Reached bar area rect.
      */
     private RectF mReachedRectF = new RectF(0, 0, 0, 0);
+
+    private RectF mSliderRectF = new RectF(0, 0, 0, 0);
 
     /**
      * The progress text offset.
@@ -186,7 +187,6 @@ public class NumberProgressBar extends View {
     private OnProgressBarListener mListener;
 
 
-
     public enum ProgressTextVisibility {
         Visible, Invisible
     }
@@ -205,7 +205,7 @@ public class NumberProgressBar extends View {
         default_reached_bar_height = dp2px(1.5f);
         default_unreached_bar_height = dp2px(1.0f);
         default_text_size = sp2px(10);
-        default_progress_text_offset = dp2px(3.0f);
+        default_progress_text_offset = 0;
 
         //load styled attributes.
         final TypedArray attributes = context.getTheme().obtainStyledAttributes(attrs, R.styleable.NumberProgressBar,
@@ -213,7 +213,7 @@ public class NumberProgressBar extends View {
 
         mReachedBarColor = attributes.getColor(R.styleable.NumberProgressBar_progress_reached_color, default_reached_color);
         mUnreachedBarColor = attributes.getColor(R.styleable.NumberProgressBar_progress_unreached_color, default_unreached_color);
-        mSliderBorderColor=mTextColor = attributes.getColor(R.styleable.NumberProgressBar_progress_text_color, default_text_color);
+        mSliderBorderColor = mTextColor = attributes.getColor(R.styleable.NumberProgressBar_progress_text_color, default_text_color);
         mTextSize = attributes.getDimension(R.styleable.NumberProgressBar_progress_text_size, default_text_size);
 
         mReachedBarHeight = attributes.getDimension(R.styleable.NumberProgressBar_progress_reached_bar_height, default_reached_bar_height);
@@ -234,12 +234,12 @@ public class NumberProgressBar extends View {
 
     @Override
     protected int getSuggestedMinimumWidth() {
-        return (int) mTextSize;
+        return (int) (mTextSize + paddingLR * 2 + mSlideWidth * 2);
     }
 
     @Override
     protected int getSuggestedMinimumHeight() {
-        return Math.max((int) mTextSize, Math.max((int) mReachedBarHeight, (int) mUnreachedBarHeight));
+        return (int) (mReachedBarHeight + paddingTB * 2 + mSlideWidth * 2);
     }
 
     @Override
@@ -269,7 +269,6 @@ public class NumberProgressBar extends View {
     }
 
 
-
     @Override
     protected void onDraw(Canvas canvas) {
         if (mIfDrawText) {
@@ -293,17 +292,12 @@ public class NumberProgressBar extends View {
         }
 
         if (mIfDrawText) {
-            RectF rectF;
-            if (mCurrentProgress == 0) {
-                rectF = new RectF(mDrawTextStart - paddingLR, mUnreachedRectF.top - paddingTB, mUnreachedRectF.left + paddingLR, mUnreachedRectF.bottom + paddingTB);
-            } else {
-                rectF = new RectF(mReachedRectF.right - paddingLR, mReachedRectF.top - paddingTB, mUnreachedRectF.left + paddingLR, mUnreachedRectF.bottom + paddingTB);
-            }
+
             //画 圆角方块
-            canvas.drawRoundRect(rectF, mSliderRadius, mSliderRadius, mSliderPaint);
+            canvas.drawRoundRect(mSliderRectF, mSliderRadius, mSliderRadius, mSliderPaint);
 
             //画边框
-            canvas.drawRoundRect(rectF, mSliderRadius, mSliderRadius, mSliderBorder);
+            canvas.drawRoundRect(mSliderRectF, mSliderRadius, mSliderRadius, mSliderBorder);
 
             //写文字
             canvas.drawText(mCurrentDrawText, mDrawTextStart, mDrawTextEnd, mTextPaint);
@@ -352,22 +346,35 @@ public class NumberProgressBar extends View {
 
         if (getProgress() == 0) {
             mDrawReachedBar = false;
-            mDrawTextStart = getPaddingLeft();
         } else {
             mDrawReachedBar = true;
             mReachedRectF.left = getPaddingLeft();
             mReachedRectF.top = getHeight() / 2.0f - mReachedBarHeight / 2.0f;
-            mReachedRectF.right = (getWidth() - getPaddingLeft() - getPaddingRight()) / (getMax() * 1.0f) * getProgress() - mOffset + getPaddingLeft();
+            mReachedRectF.right = (getWidth() - getPaddingLeft() - getPaddingRight()) / (getMax() * 1.0f) * (getProgress()) - mOffset + getPaddingLeft();
             mReachedRectF.bottom = getHeight() / 2.0f + mReachedBarHeight / 2.0f;
-            mDrawTextStart = (mReachedRectF.right + mOffset);
+
         }
 
+
+        mSliderRectF.left = mReachedRectF.right==0?getPaddingLeft():mReachedRectF.right + mSlideWidth;
+        mSliderRectF.top = getHeight() / 2.0f + -mUnreachedBarHeight / 2.0f - paddingTB;
+        mSliderRectF.right = mSliderRectF.left + mDrawTextWidth + paddingLR * 2 + mSlideWidth * 2;
+        mSliderRectF.bottom = getHeight() / 2.0f + mUnreachedBarHeight / 2.0f + paddingTB;
+
+        //多画一些 覆盖圆角
+        mReachedRectF.right = mReachedRectF.right + mSlideWidth * 3;
+
+        if ((mSliderRectF.left + mSliderRectF.width()) >= getWidth() - getPaddingRight()) {
+
+            mSliderRectF.left = getWidth() - getPaddingRight()-mSliderRectF.width();
+            mSliderRectF.right = mSliderRectF.left + mDrawTextWidth + paddingLR * 2 + mSlideWidth * 2;
+            mReachedRectF.right = mReachedRectF.right - mSlideWidth * 3;
+        }
+
+        //文字位置
+        mDrawTextStart = mSliderRectF.left + mSliderRectF.width()/2-mDrawTextWidth/2;
         mDrawTextEnd = (int) ((getHeight() / 2.0f) - ((mTextPaint.descent() + mTextPaint.ascent()) / 2.0f));
 
-        if ((mDrawTextStart + mDrawTextWidth) >= getWidth() - getPaddingRight()) {
-            mDrawTextStart = getWidth() - getPaddingRight() - mDrawTextWidth;
-            mReachedRectF.right = mDrawTextStart - mOffset;
-        }
 
         float unreachedBarStart = mDrawTextStart + mDrawTextWidth + mOffset;
         if (unreachedBarStart >= getWidth() - getPaddingRight()) {
@@ -379,6 +386,8 @@ public class NumberProgressBar extends View {
             mUnreachedRectF.top = getHeight() / 2.0f + -mUnreachedBarHeight / 2.0f;
             mUnreachedRectF.bottom = getHeight() / 2.0f + mUnreachedBarHeight / 2.0f;
         }
+
+
     }
 
     /**

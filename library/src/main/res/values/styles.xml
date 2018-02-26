@@ -3,7 +3,8 @@
     <style name="NumberProgressBar_Default">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">match_parent</item>
-
+        <item name="android:layout_marginBottom">20dp</item>
+        <item name="android:padding">20dp</item>
         <item name="progress_max">100</item>
         <item name="progress_current">0</item>
 
@@ -93,7 +94,7 @@
         <item name="progress_text_color">#FFC73B</item>
 
         <item name="progress_reached_bar_height">6dp</item>
-        <item name="progress_unreached_bar_height">5dp</item>
+        <item name="progress_unreached_bar_height">6dp</item>
     </style>
 
     <style name="NumberProgressBar_Funny_Orange">
