@@ -29,7 +29,7 @@ public class NumberProgressBar extends View {
      * Current progress, can not exceed the max progress.
      */
     private int mCurrentProgress = 0;
-
+    private int mProgressText;
     /**
      * The progress area bar color.
      */
@@ -340,7 +340,7 @@ public class NumberProgressBar extends View {
 
     private void calculateDrawRectF() {
 
-        mCurrentDrawText = String.format("%d", getProgress() * 100 / getMax());
+        mCurrentDrawText = String.format("%d", mProgressText * 100 / getMax());
         mCurrentDrawText = mPrefix + mCurrentDrawText + mSuffix;
         mDrawTextWidth = mTextPaint.measureText(mCurrentDrawText);
 
@@ -356,7 +356,7 @@ public class NumberProgressBar extends View {
         }
 
 
-        mSliderRectF.left = mReachedRectF.right==0?getPaddingLeft():mReachedRectF.right + mSlideWidth;
+        mSliderRectF.left = mReachedRectF.right == 0 ? getPaddingLeft() : mReachedRectF.right + mSlideWidth;
         mSliderRectF.top = getHeight() / 2.0f + -mUnreachedBarHeight / 2.0f - paddingTB;
         mSliderRectF.right = mSliderRectF.left + mDrawTextWidth + paddingLR * 2 + mSlideWidth * 2;
         mSliderRectF.bottom = getHeight() / 2.0f + mUnreachedBarHeight / 2.0f + paddingTB;
@@ -366,13 +366,13 @@ public class NumberProgressBar extends View {
 
         if ((mSliderRectF.left + mSliderRectF.width()) >= getWidth() - getPaddingRight()) {
 
-            mSliderRectF.left = getWidth() - getPaddingRight()-mSliderRectF.width();
+            mSliderRectF.left = getWidth() - getPaddingRight() - mSliderRectF.width();
             mSliderRectF.right = mSliderRectF.left + mDrawTextWidth + paddingLR * 2 + mSlideWidth * 2;
             mReachedRectF.right = mReachedRectF.right - mSlideWidth * 3;
         }
 
         //文字位置
-        mDrawTextStart = mSliderRectF.left + mSliderRectF.width()/2-mDrawTextWidth/2;
+        mDrawTextStart = mSliderRectF.left + mSliderRectF.width() / 2 - mDrawTextWidth / 2;
         mDrawTextEnd = (int) ((getHeight() / 2.0f) - ((mTextPaint.descent() + mTextPaint.ascent()) / 2.0f));
 
 
@@ -505,11 +505,18 @@ public class NumberProgressBar extends View {
         }
     }
 
+
+
     public void setProgress(int progress) {
+
         if (progress <= getMax() && progress >= 0) {
             this.mCurrentProgress = progress;
-            invalidate();
+
+        } else {
+            this.mCurrentProgress = 100;
         }
+        mProgressText = progress;
+        invalidate();
     }
 
     @Override

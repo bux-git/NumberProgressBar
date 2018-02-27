@@ -25,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        custom:progress_current="79"
+        custom:progress_current="301"
     />
 
     <com.daimajia.numberprogressbar.NumberProgressBar
@@ -53,6 +53,6 @@
         style="@style/NumberProgressBar_Default"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        custom:progress_current="100"/>
+        custom:progress_current="108"/>
 
 </LinearLayout>
